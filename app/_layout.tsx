@@ -4,15 +4,15 @@ import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { onlineManager } from "@tanstack/react-query";
 import { FontSource, useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { useColorScheme } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect } from "react";
+import { Platform } from "react-native";
+import Toast from "react-native-toast-message";
 import { QueryProvider } from "../src/api";
-import OnBoardingScreen from "./(screen)/OnBoarding";
 
 export { ErrorBoundary } from "expo-router";
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(tabs)",
 };
 
@@ -29,8 +29,6 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)  
-
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
@@ -39,21 +37,21 @@ export default function RootLayout() {
   return (
     <>
       {!loaded && <SplashScreen />}
-      {isLoggedIn && loaded ? <RootLayoutNav /> : <OnBoardingScreen />}
+      {loaded && <RootLayoutNav />}
     </>
   );
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
   return (
     <QueryProvider>
       <ThemeProvider value={DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          <Stack.Screen name="modal" options={{ title: "Authentication" }} />
         </Stack>
+        <Toast />
+        <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
       </ThemeProvider>
     </QueryProvider>
   );

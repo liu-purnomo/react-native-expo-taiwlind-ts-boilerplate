@@ -1,22 +1,28 @@
-import { AntDesign } from "@expo/vector-icons";
-import React, { useRef, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 import {
-    Animated,
-    Image,
-    Pressable,
-    ScrollView,
-    Text,
-    View,
-    useWindowDimensions,
+  Animated,
+  Image,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+  useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useRouter } from "expo-router";
-import Button from "src/components/Button";
-import { onboarding } from "src/constants";
+import Button from "@/components/Button";
+import { onboarding } from "@/constants";
+import { Link, useRouter } from "expo-router";
 import Onboard from "./item";
 
-export default function OnBoardingScreen() {
+export interface OnBoardingScreenProps {
+  isLoggedIn: boolean;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
+}
+
+export const OnBoardingScreen: FC<OnBoardingScreenProps> = ({
+  setIsLoggedIn,
+}) => {
   const { width: screenWidth } = useWindowDimensions();
   const flatListRef = useRef<ScrollView>(null);
 
@@ -37,6 +43,10 @@ export default function OnBoardingScreen() {
 
   const router = useRouter();
 
+  const navigateToLogin = () => {
+    router.push("/auth/login");
+  };
+
   return (
     <SafeAreaView
       className="flex-1 items-center justify-center bg-sky-500"
@@ -48,7 +58,7 @@ export default function OnBoardingScreen() {
           style={{ width: 80, height: 40 }}
           resizeMode="contain"
         />
-        <Button onPress={() => router.push("/auth")}>
+        <Button onPress={() => setIsLoggedIn(true)}>
           <Text className="font-bold text-sky-100">Lewati</Text>
         </Button>
       </View>
@@ -75,26 +85,28 @@ export default function OnBoardingScreen() {
         })}
       </ScrollView>
 
-      <View className="mb-10 flex h-10 flex-row items-center justify-center">
-        {onboarding.map((item, index) => (
-          <Animated.View
-            key={index}
-            className={`${
-              currentBoard === index ? "w-10 bg-sky-50" : "w-6 bg-sky-200"
-            } mx-1 h-2  rounded-lg`}
-          />
-        ))}
-      </View>
+      {currentBoard !== onboarding.length - 1 && (
+        <View className="mb-10 flex h-10 flex-row items-center justify-center">
+          {onboarding.map((item, index) => (
+            <Animated.View
+              key={index}
+              className={`${
+                currentBoard === index ? "w-10 bg-sky-50" : "w-6 bg-sky-200"
+              } mx-1 h-2  rounded-lg`}
+            />
+          ))}
+        </View>
+      )}
 
       {currentBoard === onboarding.length - 1 && (
-        <Pressable
-          onPress={() => console.log('ok')}
-          className="mb-4 items-center justify-center rounded-full bg-sky-100 p-3"
-        >
-          <Text className="font-semibold text-black">Login</Text>
-          <AntDesign name="arrowright" size={20} className="w-10" />
-        </Pressable>
+        <Link href="/modal" asChild>
+          <Pressable className="mb-20 rounded-full border border-sky-500 bg-sky-50 px-5 py-3 shadow-xl">
+            <View className="flex flex-row">
+              <Text className="font-bold text-sky-500">Masuk Sekarang</Text>
+            </View>
+          </Pressable>
+        </Link>
       )}
     </SafeAreaView>
   );
-}
+};

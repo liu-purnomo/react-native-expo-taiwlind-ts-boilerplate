@@ -1,9 +1,12 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, useColorScheme } from "react-native";
 
+import { getUserInfo } from "@/api";
+import { useQuery } from "@tanstack/react-query";
 import Colors from "../../src/constants/Colors";
+import { OnBoardingScreen } from "../screens/OnBoarding";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -15,7 +18,33 @@ function TabBarIcon(props: {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
-export default function TabLayout() {
+export default function TabScreen() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const { data } = useQuery(["userInfo"], getUserInfo);
+
+  console.log(data);
+
+  useEffect(() => {
+    if (!!data) {
+      setIsLoggedIn(true);
+    }
+  }, [data]);
+
+  return (
+    <>
+      {!isLoggedIn && (
+        <OnBoardingScreen
+          isLoggedIn={isLoggedIn}
+          setIsLoggedIn={setIsLoggedIn}
+        />
+      )}
+      {isLoggedIn && <TabLayout />}
+    </>
+  );
+}
+
+function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
@@ -27,8 +56,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "View Items",
-          headerShown: false,
+          title: "Remote Pilot",
+          headerShown: true,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="list-alt" color={color} />
           ),
@@ -52,6 +81,17 @@ export default function TabLayout() {
         name="add"
         options={{
           title: "Add Item",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="plus-square" color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="auth"
+        options={{
+          title: "Authentication",
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="plus-square" color={color} />

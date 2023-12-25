@@ -1,6 +1,6 @@
+import { OnboardingItem } from "@/constants";
 import React from "react";
 import { Animated, Text, View } from "react-native";
-import { OnboardingItem } from "src/constants";
 
 interface OnboardProps {
   index: number;

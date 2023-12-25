@@ -5,19 +5,15 @@ module.exports = function (api) {
   return {
     presets: ["babel-preset-expo"],
     plugins: [
-      "nativewind/babel", 
+      "nativewind/babel",
       require.resolve("expo-router/babel"),
       [
-        'module-resolver',
+        "module-resolver",
         {
+          root: ["."],
+          extensions: [".ios.js", ".android.js", ".js", ".ts", ".tsx", ".json"],
           alias: {
-            'app': './app',
-            'src': './src',
-            'api': './src/api',
-            'assets': './src/assets',
-            'components': './src/components',
-            'constants': './src/constants',
-            'screens': './src/screens',
+            "@": "./src",
           },
         },
       ],

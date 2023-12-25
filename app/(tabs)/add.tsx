@@ -25,6 +25,7 @@ export default function TabTwoScreen() {
     mutate({ id: Math.random(), content: text });
     onChangeText("");
   }
+  
   return (
     <SafeAreaView className="flex-1 items-center bg-white">
       <Text className="text-xl font-bold my-5">Add Item</Text>
